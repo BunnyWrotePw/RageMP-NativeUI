@@ -1,47 +1,52 @@
 {
-  "name": "@DurtyFree/altv-nativeui",
+  "name": "@Vladeksh/RageMP-NativeUI",
   "version": "1.4.4",
-  "description": "NativeUI for GTA V alt:V Multiplayer mod written in Javascript / TypeScript",
-  "main": "dist/nativeui/nativeui.min.js",
-  "types": "dist/nativeui/types/NativeUi.d.ts",
+  "description": "NativeUI for GTA V RAGE Multiplayer mod written in TypeScript",
+  "main": "dist/NativeUi.js",
+  "types": "dist/NativeUi.d.ts",
   "scripts": {
-    "build": "rollup -c",
-    "watch": "rollup -cw"
+    "build": "webpack"
   },
   "files": [
     "dist"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DurtyFree/alt-V-NativeUI.git"
+    "url": "git+https://github.com/Vladeksh/RageMP-NativeUI.git"
   },
   "keywords": [
-    "altv",
+    "ragemp",
     "nativeui"
   ],
   "author": {
-    "name": "DurtyFree",
-    "url": "https://github.com/DurtyFree"
+    "name": "Vladeksh",
+    "url": "https://github.com/Vladeksh"
   },
   "maintainers": [
     {
-      "name": "DurtyFree",
-      "url": "https://github.com/DurtyFree"
+      "name": "Vladeksh",
+      "url": "https://github.com/Vladeksh"
     }
   ],
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/DurtyFree/alt-V-NativeUI/issues"
+    "url": "https://github.com/Vladeksh/RageMP-NativeUI/issues"
   },
-  "homepage": "https://github.com/DurtyFree/alt-V-NativeUI#readme",
+  "homepage": "https://github.com/Vladeksh/RageMP-NativeUI#readme",
   "devDependencies": {
-    "@altv/types-client": "^1.1.0",
-    "@altv/types-natives": "^1.1.0",
-    "@types/node": "^14.0.11",
-    "rollup": "^2.15.0",
-    "rollup-plugin-terser": "^6.1.0",
-    "rollup-plugin-typescript2": "^0.27.1",
-    "typescript": "^3.9.5"
+    "@types/gulp": "^4.0.7",
+    "@types/node": "13.1.0",
+    "@types/ragemp-c": "github:Vladeksh/types-ragemp-c#v1.0",
+    "@typescript-eslint/eslint-plugin": "^4.4.1",
+    "@typescript-eslint/parser": "^4.4.1",
+    "eslint": "^7.11.0",
+    "gulp": "^4.0.2",
+    "gulp-copy": "^4.0.1",
+    "ts-loader": "^8.0.5",
+    "ts-node": "^9.0.0",
+    "tslib": "1.13.0",
+    "typescript": "^3.9.7",
+    "webpack-stream": "^6.1.0"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"

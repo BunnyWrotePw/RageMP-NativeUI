@@ -1,6 +1,4 @@
-import game from 'natives';
 import UIMenuItem from "../items/UIMenuItem";
-import Control from '../enums/Control';
 
 export default class InstructionalButton {
     public Text: string;
@@ -8,7 +6,7 @@ export default class InstructionalButton {
 
     private _itemBind: UIMenuItem = null;
     private readonly _buttonString: string;
-    private readonly _buttonControl: Control;
+    private readonly _buttonControl: RageEnums.Controls | number;
     private readonly _usingControls: boolean;
 
     /*
@@ -18,7 +16,7 @@ export default class InstructionalButton {
     * @param keystring Custom keyboard button, like "I", or "O", or "F5".
     * @param text Help text that goes with the button.
     */
-    constructor(text: string, control: Control, buttonString: string = null) {
+    constructor(text: string, control: RageEnums.Controls | number, buttonString: string = null) {
         this.Text = text;
         this._buttonControl = control;
         this._usingControls = buttonString == null;
@@ -34,6 +32,6 @@ export default class InstructionalButton {
     }
 
     public GetButtonId(): string {
-        return this._usingControls ? game.getControlInstructionalButton(2, this._buttonControl as number, false) : "t_" + this._buttonString;
+        return this._usingControls ? mp.game.controls.getControlActionName(2, this._buttonControl as number, false) : "t_" + this._buttonString;
     }
 }

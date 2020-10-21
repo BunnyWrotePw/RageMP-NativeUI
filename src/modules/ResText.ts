@@ -1,6 +1,4 @@
-import * as alt from 'alt-client';
 import Alignment from "../enums/Alignment";
-import game from 'natives';
 import Color from "../utils/Color";
 import Point from "../utils/Point";
 import Size from "../utils/Size";
@@ -11,7 +9,7 @@ export default class ResText extends Text {
     public TextAlignment: Alignment = Alignment.Left;
     public DropShadow: boolean;
     public Outline: boolean;
-    public Wrap: number = 0;
+    public Wrap = 0;
 
     public get WordWrap() {
         return new Size(this.Wrap, 0);
@@ -62,35 +60,35 @@ export default class ResText extends Text {
         const x = this.Pos.X / width;
         const y = this.Pos.Y / height;
 
-        game.setTextFont(parseInt(font as string));
-        game.setTextScale(1.0, scale);
-        game.setTextColour(color.R, color.G, color.B, color.A);
+        mp.game.ui.setTextFont(parseInt(font as string));
+        mp.game.ui.setTextScale(1.0, scale);
+        mp.game.ui.setTextColour(color.R, color.G, color.B, color.A);
 
         if (centered !== undefined) {
-            game.setTextCentre(centered);
+            mp.game.ui.setTextCentre(centered);
         } else {
-            if (dropShadow) game.setTextDropshadow(2, 0, 0, 0, 0);
+            if (dropShadow) mp.game.ui.setTextDropshadow(2, 0, 0, 0, 0);
 
-            if (outline) alt.logWarning("[NativeUI] ResText outline not working!");
+            if (outline) mp.console.logWarning("[NativeUI] ResText outline not working!", true, true);
 
             switch (textAlignment) {
                 case Alignment.Centered:
-                    game.setTextCentre(true);
+                    mp.game.ui.setTextCentre(true);
                     break;
                 case Alignment.Right:
-                    game.setTextRightJustify(true);
-                    game.setTextWrap(0.0, x);
+                    mp.game.ui.setTextRightJustify(true);
+                    mp.game.ui.setTextWrap(0.0, x);
                     break;
             }
 
             if (this.Wrap) {
                 const xsize = (this.Pos.X + this.Wrap) / width;
-                game.setTextWrap(x, xsize);
+                mp.game.ui.setTextWrap(x, xsize);
             }
         }
 
-        game.beginTextCommandDisplayText("CELL_EMAIL_BCON");
+        mp.game.ui.setTextEntry('CELL_EMAIL_BCON'); // THREESTRINGS
         Text.AddLongString(caption as string);
-        game.endTextCommandDisplayText(x, y, 0);
+        mp.game.ui.drawText(x, y);
     }
 }

@@ -1,4 +1,3 @@
-import * as alt from 'alt-client';
 import BadgeStyle from "../enums/BadgeStyle";
 import Font from "../enums/Font";
 import Alignment from "../enums/Alignment";
@@ -58,14 +57,14 @@ export default class UIMenuDynamicListItem extends UIMenuItem {
         this._currentOffset = Screen.GetTextWidth(this.PreCaptionText + this._selectedValue, this._itemText && this._itemText.Font ? this._itemText.Font : 0, this._itemText && this._itemText.Scale ? this._itemText.Scale : 0.35);
     }
 
-    constructor(text: string, selectionChangeHandler: { (item: UIMenuDynamicListItem, selectedValue: string, changeDirection: ChangeDirection): string }, description: string = "", selectedStartValueHandler: { (): string } = null, data: any = null) {
+    constructor(text: string, selectionChangeHandler: { (item: UIMenuDynamicListItem, selectedValue: string, changeDirection: ChangeDirection): string }, description = "", selectedStartValueHandler: { (): string } = null, data: any = null) {
         super(text, description, data);
 
         if (!this.isVariableFunction(selectionChangeHandler)) {
-            alt.logError(`[UIMenuDynamicListItem] ${text} is not created with a valid selectionChangeHandler, needs to be function. Please see docs.`);
+            mp.console.logError(`[UIMenuDynamicListItem] ${text} is not created with a valid selectionChangeHandler, needs to be function. Please see docs.`, true, true);
         }
         if (!this.isVariableFunction(selectedStartValueHandler)) {
-            alt.logError(`[UIMenuDynamicListItem] ${text} is not created with a valid selectedStartValueHandler, needs to be function. Please see docs.`);
+            mp.console.logError(`[UIMenuDynamicListItem] ${text} is not created with a valid selectedStartValueHandler, needs to be function. Please see docs.`, true, true);
         }
 
         this.SelectionChangeHandler = selectionChangeHandler;

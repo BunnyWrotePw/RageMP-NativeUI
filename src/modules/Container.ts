@@ -1,4 +1,3 @@
-import game from 'natives';
 import Size from "../utils/Size";
 import Rectangle from "./Rectangle";
 import Screen from "../utils/Screen";
@@ -26,12 +25,12 @@ export default class Container extends Rectangle {
         const ratio = screenw / screenh;
         const width = height * ratio;
 
-        const w = this.Size.Width / width;
+        const w: number = this.Size.Width / width;
         const h = this.Size.Height / height;
-        const x = (this.Pos.X + offset.Width) / width + w * 0.5;
+        const x: number = (this.Pos.X + offset.Width) / width + w * 0.5;
         const y = (this.Pos.Y + offset.Height) / height + h * 0.5;
 
-        game.drawRect(x, y, w, h, this.Color.R, this.Color.G, this.Color.B, this.Color.A, false);
+        mp.game.invoke('0x3A618A217E5154F0', x, y, w, h, this.Color.R, this.Color.G, this.Color.B, this.Color.A, false);
 
         for (var item of this.Items)
             item.Draw(new Size(this.Pos.X + offset.Width, this.Pos.Y + offset.Height));

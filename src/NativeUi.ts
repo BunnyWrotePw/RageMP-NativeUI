@@ -1,5 +1,3 @@
-import * as alt from 'alt-client';
-import game from 'natives';
 import BadgeStyle from "./enums/BadgeStyle";
 import Font from "./enums/Font";
 import Alignment from './enums/Alignment';
@@ -74,8 +72,8 @@ export default class NativeUI {
     private readonly _background: Sprite;
 
     public readonly Id: string = UUIDV4();
-    public readonly SelectTextLocalized: string = alt.getGxtText("HUD_INPUT2");
-    public readonly BackTextLocalized: string = alt.getGxtText("HUD_INPUT3");
+    public readonly SelectTextLocalized: string = mp.game.gxt.getDefault("HUD_INPUT2");
+    public readonly BackTextLocalized: string = mp.game.gxt.getDefault("HUD_INPUT3");
 
     public WidthOffset: number = 0;
     public ParentMenu: NativeUI = null;
@@ -201,7 +199,7 @@ export default class NativeUI {
                 }
             }
             if (menuPool.length === 0) {
-                game.setMouseCursorSprite(1);
+				mp.game.invoke('0x8DB8CFFD58B62552'.toUpperCase(), 1);
             }
         }
     }
@@ -282,8 +280,7 @@ export default class NativeUI {
         this._background = new Sprite("commonmenu", "gradient_bgd", new Point(this._offset.X, 144 + this._offset.Y - 37 + this._extraOffset), new Size(290, 25));
         this._visible = false;
 
-        alt.everyTick(this.render.bind(this));
-        //alt.log(`Created Native UI! ${this.title}`);
+        mp.events.add("render", this.render.bind(this));
     }
 
     public DisableInstructionalButtons(disable: boolean) {
@@ -548,15 +545,15 @@ export default class NativeUI {
     }
     
     public IsMouseInListItemArrows(item: UIMenuItem, topLeft: Point, safezone: any) {
-        game.beginTextCommandGetWidth("jamyfafi");
-        game.addTextComponentSubstringPlayerName(item.Text);
+        mp.game.invoke("0x54ce8ac98e120cab".toUpperCase(), "jamyfafi");
+        mp.game.ui.addTextComponentSubstringPlayerName(item.Text);
         let res = Screen.ResolutionMaintainRatio;
         let screenw = res.Width;
         let screenh = res.Height;
         const height = 1080.0;
         const ratio = screenw / screenh;
         let width = height * ratio;
-        const labelSize = game.endTextCommandGetWidth(false) * width * 0.35;
+        const labelSize = mp.game.invoke("0x85f061da64ed2f67".toUpperCase(), 0) * width * 0.35;
 
         const labelSizeX = 5 + labelSize + 10;
         const arrowSizeX = 431 - labelSizeX;
@@ -573,20 +570,20 @@ export default class NativeUI {
             return;
         }
 
-        alt.showCursor(true);
+        if (!mp.gui.cursor.visible) mp.gui.cursor.visible = true;
         let limit = this.MenuItems.length - 1;
         let counter = 0;
         if (this.MenuItems.length > this._maxItemsOnScreen + 1)
             limit = this._maxItem;
 
         if (Screen.IsMouseInBounds(new Point(0, 0), new Size(30, 1080)) && this._mouseEdgeEnabled) {
-            game.setGameplayCamRelativeHeading(game.getGameplayCamRelativeHeading() + 5.0);
-            game.setMouseCursorSprite(6);
+            mp.game.cam.setGameplayCamRelativeHeading(mp.game.cam.getGameplayCamRelativeHeading() + 5.0);
+            mp.game.ui.setCursorSprite(6);
         } else if (Screen.IsMouseInBounds(new Point(Screen.ResolutionMaintainRatio.Width - 30.0, 0), new Size(30, 1080)) && this._mouseEdgeEnabled) {
-            game.setGameplayCamRelativeHeading(game.getGameplayCamRelativeHeading() - 5.0);
-            game.setMouseCursorSprite(7);
+            mp.game.cam.setGameplayCamRelativeHeading(mp.game.cam.getGameplayCamRelativeHeading() - 5.0);
+            mp.game.ui.setCursorSprite(7);
         } else if (this._mouseEdgeEnabled) {
-            game.setMouseCursorSprite(1);
+            mp.game.ui.setCursorSprite(1);
         }
 
         for (let i = this._minItem; i <= limit; i++) {
@@ -601,9 +598,9 @@ export default class NativeUI {
                 uiMenuItem.Hovered = true;
                 const res = this.IsMouseInListItemArrows(this.MenuItems[i], new Point(xpos, ypos), 0);
                 if (uiMenuItem.Hovered && res == 1 && (this.MenuItems[i] instanceof UIMenuListItem || this.MenuItems[i] instanceof UIMenuAutoListItem || this.MenuItems[i] instanceof UIMenuDynamicListItem)) {
-                    game.setMouseCursorSprite(5);
+                    mp.game.invoke('0x8DB8CFFD58B62552'.toUpperCase(), 5);
                 }
-                if (game.isControlJustReleased(0, 24) || game.isDisabledControlJustReleased(0, 24))
+                if (mp.game.controls.isControlJustPressed(0, 24) || mp.game.controls.isDisabledControlJustPressed(0, 24))
                     if (uiMenuItem.Selected && uiMenuItem.Enabled) {
                         if ((this.MenuItems[i] instanceof UIMenuListItem || this.MenuItems[i] instanceof UIMenuAutoListItem || this.MenuItems[i] instanceof UIMenuDynamicListItem)
                             && this.IsMouseInListItemArrows(this.MenuItems[i], new Point(xpos, ypos), 0) > 0) {
@@ -648,7 +645,7 @@ export default class NativeUI {
 
         if (Screen.IsMouseInBounds(new Point(extraX, extraY), new Size(431 + this.WidthOffset, 18))) {
             this._extraRectangleUp.Color = new Color(30, 30, 30, 255);
-            if (game.isControlJustPressed(0, 24) || game.isDisabledControlJustPressed(0, 24)) {
+            if (mp.game.controls.isControlJustPressed(0, 24) || mp.game.controls.isDisabledControlJustPressed(0, 24)) {
                 if (this.MenuItems.length > this._maxItemsOnScreen + 1)
                     this.GoUpOverflow();
                 else
@@ -659,7 +656,7 @@ export default class NativeUI {
 
         if (Screen.IsMouseInBounds(new Point(extraX, extraY + 18), new Size(431 + this.WidthOffset, 18))) {
             this._extraRectangleDown.Color = new Color(30, 30, 30, 255);
-            if (game.isControlJustPressed(0, 24) || game.isDisabledControlJustPressed(0, 24)) {
+            if (mp.game.controls.isControlJustPressed(0, 24) || mp.game.controls.isDisabledControlJustPressed(0, 24)) {
                 if (this.MenuItems.length > this._maxItemsOnScreen + 1)
                     this.GoDownOverflow();
                 else
@@ -677,41 +674,41 @@ export default class NativeUI {
             return;
         }
 
-        if (game.isControlJustReleased(0, 177)) { // Back            
+        if (mp.game.controls.isControlJustPressed(0, 177)) { // Back
             this.GoBack();
         }
         if (this.MenuItems.length == 0)
             return;
 
-        if (game.isControlPressed(0, 172) && this._lastUpDownNavigation + 120 < Date.now()) { // Up
+        if (mp.game.controls.isControlPressed(0, 172) && this._lastUpDownNavigation + 120 < Date.now()) { // Up
             this._lastUpDownNavigation = Date.now();
             if (this.MenuItems.length > this._maxItemsOnScreen + 1)
                 this.GoUpOverflow();
             else
                 this.GoUp();
             this.UpdateScaleform();
-        } else if (game.isControlJustReleased(0, 172)) {
+        } else if (mp.game.controls.isControlJustPressed(0, 172)) {
             this._lastUpDownNavigation = 0;
-        } else if (game.isControlPressed(0, 173) && this._lastUpDownNavigation + 120 < Date.now()) { // Down
+        } else if (mp.game.controls.isControlPressed(0, 173) && this._lastUpDownNavigation + 120 < Date.now()) { // Down
             this._lastUpDownNavigation = Date.now();
             if (this.MenuItems.length > this._maxItemsOnScreen + 1)
                 this.GoDownOverflow();
             else
                 this.GoDown();
             this.UpdateScaleform();
-        } else if (game.isControlJustReleased(0, 173)) {
+        } else if (mp.game.controls.isControlJustPressed(0, 173)) {
             this._lastUpDownNavigation = 0;
-        } else if (game.isControlPressed(0, 174) && this._lastLeftRightNavigation + 100 < Date.now()) { // Left            
+        } else if (mp.game.controls.isControlPressed(0, 174) && this._lastLeftRightNavigation + 100 < Date.now()) { // Left
             this._lastLeftRightNavigation = Date.now();
             this.GoLeft();
-        } else if (game.isControlJustReleased(0, 174)) {
+        } else if (mp.game.controls.isControlJustPressed(0, 174)) {
             this._lastLeftRightNavigation = 0;
-        } else if (game.isControlPressed(0, 175) && this._lastLeftRightNavigation + 100 < Date.now()) { // Right            
+        } else if (mp.game.controls.isControlPressed(0, 175) && this._lastLeftRightNavigation + 100 < Date.now()) { // Right
             this._lastLeftRightNavigation = Date.now();
             this.GoRight();
-        } else if (game.isControlJustReleased(0, 175)) {
+        } else if (mp.game.controls.isControlJustPressed(0, 175)) {
             this._lastLeftRightNavigation = 0;
-        } else if (game.isControlJustReleased(0, 201)) { // Select            
+        } else if (mp.game.controls.isControlJustPressed(0, 201)) { // Select
             this.SelectItem();
         }
     }
@@ -869,8 +866,8 @@ export default class NativeUI {
         this._instructionalButtonsScaleform.callFunction("TOGGLE_MOUSE_BUTTONS", 0 as number);
         this._instructionalButtonsScaleform.callFunction("CREATE_CONTAINER");
 
-        this._instructionalButtonsScaleform.callFunction("SET_DATA_SLOT", 0 as number, game.getControlInstructionalButton(2, Control.PhoneSelect as number, false) as string, this.SelectTextLocalized as string);
-        this._instructionalButtonsScaleform.callFunction("SET_DATA_SLOT", 1 as number, game.getControlInstructionalButton(2, Control.PhoneCancel as number, false) as string, this.BackTextLocalized as string);
+        this._instructionalButtonsScaleform.callFunction("SET_DATA_SLOT", 0 as number, mp.game.controls.getControlActionName(2, RageEnums.Controls.PHONE_SELECT, false) as string, this.SelectTextLocalized as string);
+        this._instructionalButtonsScaleform.callFunction("SET_DATA_SLOT", 1 as number, mp.game.controls.getControlActionName(2, RageEnums.Controls.PHONE_CANCEL, false) as string, this.BackTextLocalized as string);
 
         let count: number = 2;
         this._instructionalButtons.filter(b => b.ItemBind == null || this.MenuItems[this.CurrentSelection] == b.ItemBind).forEach((button) => {
@@ -886,10 +883,10 @@ export default class NativeUI {
             return;
 
         if (this._buttonsEnabled) {
-            game.drawScaleformMovieFullscreen(this._instructionalButtonsScaleform.handle, 255, 255, 255, 255, 0);
-            game.hideHudComponentThisFrame(6); // Vehicle Name
-            game.hideHudComponentThisFrame(7); // Area Name
-            game.hideHudComponentThisFrame(9); // Street Name
+            mp.game.graphics.drawScaleformMovieFullscreen(this._instructionalButtonsScaleform.handle, 255, 255, 255, 255, false);
+            mp.game.ui.hideHudComponentThisFrame(6); // HUD_VEHICLE_NAME
+            mp.game.ui.hideHudComponentThisFrame(7); // HUD_AREA_NAME
+            mp.game.ui.hideHudComponentThisFrame(9); // HUD_STREET_NAME
         }
 
         if (this._justOpened) {
@@ -998,3 +995,28 @@ export {
     BigMessage,
     MidsizedMessage
 }
+
+/*
+exports.Menu = NativeUI;
+exports.UIMenuItem = UIMenuItem;
+exports.UIMenuListItem = UIMenuListItem;
+exports.UIMenuAutoListItem = UIMenuAutoListItem;
+exports.UIMenuDynamicListItem = UIMenuDynamicListItem;
+exports.UIMenuCheckboxItem = UIMenuCheckboxItem;
+exports.UIMenuSliderItem = UIMenuSliderItem;
+exports.BadgeStyle = BadgeStyle;
+exports.ChangeDirection = ChangeDirection;
+exports.Font = Font;
+exports.Alignment = Alignment;
+exports.Control = Control;
+exports.HudColor = HudColor;
+exports.Sprite = Sprite;
+exports.ResRectangle = ResRectangle;
+exports.InstructionalButton = InstructionalButton;
+exports.Point = Point;
+exports.Size = Size;
+exports.Color = Color;
+exports.ItemsCollection = ItemsCollection;
+exports.ListItem = ListItem;
+exports.BigMessage = BigMessage;
+exports.MidsizedMessage = MidsizedMessage;*/

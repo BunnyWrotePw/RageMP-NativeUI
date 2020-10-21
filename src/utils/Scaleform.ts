@@ -1,13 +1,10 @@
-﻿import * as alt from 'alt-client';
-import * as game from 'natives';
-
-export default class Scaleform {
-    private _handle: number = 0;
-    private scaleForm: string;
+﻿export default class Scaleform {
+    private _handle = 0;
+    private readonly scaleForm: string;
 
     public constructor(scaleForm: string) {
         this.scaleForm = scaleForm;
-        this._handle = game.requestScaleformMovie(this.scaleForm);
+        this._handle = mp.game.graphics.requestScaleformMovie(this.scaleForm);
     }
 
     public get handle(): number {
@@ -19,40 +16,39 @@ export default class Scaleform {
     }
 
     public get isLoaded(): boolean {
-        return game.hasScaleformMovieLoaded(this._handle);
+        return mp.game.graphics.hasScaleformMovieLoaded(this._handle);
     }
 
     private callFunctionHead(funcName: string, ...args: any[]): void {
         if (!this.isValid || !this.isLoaded)
             return;
 
-        game.beginScaleformMovieMethod(this._handle, funcName);
-        //alt.log("Running func head " + funcName + "(" + args + ") on " + this.handle + " (" + this.scaleForm + ")");
+        mp.game.graphics.pushScaleformMovieFunction(this._handle, funcName);
+        // mp.console.logInfo("Running func head " + funcName + "(" + args + ") on " + this.handle + " (" + this.scaleForm + ")", true, true);
 
         args.forEach((arg: any) => {
             switch (typeof arg) {
                 case "number":
                     {
                         if (Number(arg) === arg && arg % 1 !== 0) {
-                            game.scaleformMovieMethodAddParamFloat(arg);
+                            mp.game.graphics.pushScaleformMovieFunctionParameterFloat(arg);
                         }
                         else {
-                            game.scaleformMovieMethodAddParamInt(arg);
+                            mp.game.graphics.pushScaleformMovieFunctionParameterInt(arg);
                         }
+                        // break;
                     }
                 case "string":
-                    {
-                        game.scaleformMovieMethodAddParamPlayerNameString(arg as string);
-                        break;
-                    }
+                    mp.game.graphics.pushScaleformMovieFunctionParameterString(arg as string);
+                    break;
                 case "boolean":
                     {
-                        game.scaleformMovieMethodAddParamBool(arg);
+                        mp.game.graphics.pushScaleformMovieFunctionParameterBool(arg);
                         break;
                     }
                 default:
                     {
-                        alt.logError(`Unknown argument type ${typeof arg} = ${arg.toString()} passed to scaleform with handle ${this._handle}`);
+                        mp.console.logError(`Unknown argument type ${typeof arg} = ${arg.toString()} passed to scaleform with handle ${this._handle}`, true, true);
                     }
             }
         });
@@ -60,31 +56,30 @@ export default class Scaleform {
 
     public callFunction(funcName: string, ...args: any[]): void {
         this.callFunctionHead(funcName, ...args);
-        game.endScaleformMovieMethod();
+        mp.game.graphics.popScaleformMovieFunctionVoid();
     }
 
     public callFunctionReturn(funcName: string, ...args: any[]): number {
         this.callFunctionHead(funcName, ...args);
-        return game.endScaleformMovieMethodReturnValue();
+        return mp.game.invoke("0xC50AA39A577AF886");
     }
 
     public render2D(): void {
         if (!this.isValid || !this.isLoaded)
             return;
-        game.drawScaleformMovieFullscreen(this._handle, 255, 255, 255, 255, 0);
+        mp.game.graphics.drawScaleformMovieFullscreen(this._handle, 255, 255, 255, 255, false);
     }
 
     public recreate(): void {
         if (!this.isValid || !this.isLoaded)
             return;
-        game.setScaleformMovieAsNoLongerNeeded(this._handle);
-        this._handle = game.requestScaleformMovie(this.scaleForm);
+        this._handle = mp.game.graphics.requestScaleformMovie(this.scaleForm);
     }
 
     public destroy(): void {
         if (!this.isValid)
             return;
-        game.setScaleformMovieAsNoLongerNeeded(this._handle);
+        mp.game.graphics.setScaleformMovieAsNoLongerNeeded(this._handle);
         this._handle = 0;
     }
 }
